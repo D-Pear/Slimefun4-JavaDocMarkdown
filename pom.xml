@@ -259,6 +259,14 @@
                     <!-- 在自动化流程中非常有用 -->
                     <additionalOptions>-Xdoclint:none</additionalOptions>
                 </configuration>
+                
+                <dependencies>
+                    <dependency>
+                        <groupId>ch.raffael.doclet</groupId>
+                        <artifactId>doclet-markdown</artifactId>
+                        <version>1.5.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
 
@@ -500,10 +508,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>ch.raffael.doclet</groupId>
-            <artifactId>doclet-markdown</artifactId>
-            <version>1.5.1</version>
-        </dependency>
     </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
