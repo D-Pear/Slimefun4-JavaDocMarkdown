@@ -241,59 +241,23 @@
                 <version>3.11.2</version>
 
                 <configuration>
-                    <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
-                    <destDir>javadocs</destDir>
-
-                    <doctitle>Slimefun4 - Javadocs</doctitle>
-                    <windowtitle>Slimefun4 - Javadocs</windowtitle>
-                    <detectOfflineLinks>false</detectOfflineLinks>
-                    <additionalJOption>-html5</additionalJOption>
-
-                    <links>
-                        <!-- We can reference the Spigot API in our Javadocs -->
-                        <link>${paper.javadocs}</link>
-                    </links>
-
-                    <!-- We can group packages together in our Javadocs -->
-                    <groups>
-                        <group>
-                            <title>Slimefun4 - API</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.api*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Core packages</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.core*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Implementations</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.implementation*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Integrations with other
-                                plugins</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.integrations*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Common utility packages</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.utils*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Items</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.implementation.items*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Multiblocks</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Electrical Machines</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.implementation.items.electric*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Old packages</title>
-                            <packages>me.mrCookieSlime.Slimefun*</packages>
-                        </group>
-                    </groups>
+                    <!-- 1. 指定 Doclet 类 -->
+                    <doclet>ch.raffael.doclet.markdown.MarkdownDoclet</doclet>
+                    
+                    <!-- 2. 提供 Doclet 的依赖 -->
+                    <docletArtifact>
+                        <groupId>ch.raffael.doclet</groupId>
+                        <artifactId>doclet-markdown</artifactId>
+                        <version>1.5.1</version> <!-- 这是一个稳定版本 -->
+                    </docletArtifact>
+                    
+                    <!-- 3. 定义输出目录 (更清晰的名称) -->
+                    <!-- 注意：如果你用了GitHub Actions, 这里的路径要和Action里打包的路径一致 -->
+                    <destDir>apidocs-md</destDir>
+                    
+                    <!-- 4. (重要!) 避免因文档注释不规范导致构建失败 -->
+                    <!-- 在自动化流程中非常有用 -->
+                    <additionalOptions>-Xdoclint:none</additionalOptions>
                 </configuration>
             </plugin>
         </plugins>
