@@ -75,20 +75,8 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
-
-    <!-- 
-        *****************************************************************
-        *                      !!! 关键修复 1 !!!                       *
-        *   将 pluginRepositories 放在正确的位置 (project的直接子级)     *
-        *****************************************************************
-    -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
+    
+    <!-- 移除 pluginRepositories，因为 doclet 在 Maven Central，默认就会查找 -->
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
@@ -97,6 +85,7 @@
         <finalName>${project.name} v${project.version}</finalName>
 
         <plugins>
+            <!-- 其他插件保持不变 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -193,27 +182,35 @@
             </plugin>
 
             <!-- 
-                *****************************************************************
-                *                      !!! 关键修复 2 !!!                       *
-                *       清理并简化插件配置，只保留最可靠的<dependencies>        *
-                *****************************************************************
+                ********************************************************************************
+                *                           !!! 最终的正确配置 !!!                           *
+                *       完全按照官方文档的指示进行配置，使用正确的坐标和类名。         *
+                ********************************************************************************
             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.3</version>
+                <version>3.6.3</version> <!-- 使用一个现代化的插件版本 -->
                 <configuration>
-                    <doclet>ch.raffael.doclet.markdown.MarkdownDoclet</doclet>
+                    <!-- 1. 使用官方文档指定的正确类名 -->
+                    <doclet>ch.raffael.mddoclet.MarkdownDoclet</doclet>
+                    
+                    <!-- 2. 使用官方文档指定的正确坐标 -->
+                    <docletArtifact>
+                        <groupId>ch.raffael.markdown-doclet</groupId>
+                        <artifactId>markdown-doclet</artifactId>
+                        <version>1.4</version>
+                    </docletArtifact>
+                    
+                    <!-- 3. 定义输出目录 -->
                     <destDir>apidocs-md</destDir>
+                    
+                    <!-- 4. 禁用严格检查，避免构建失败 -->
                     <additionalOptions>-Xdoclint:none</additionalOptions>
+                    
+                    <!-- 5. 禁用标准选项，避免与Markdown Doclet冲突，这比 'true' 更安全 -->
+                    <useStandardDocletOptions>false</useStandardDocletOptions>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>ch.raffael.doclet</groupId>
-                        <artifactId>doclet-markdown</artifactId>
-                        <version>1.5.1</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
 
@@ -255,6 +252,7 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- 原有的项目依赖保持不变 -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
