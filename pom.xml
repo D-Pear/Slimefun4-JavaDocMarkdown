@@ -181,8 +181,8 @@
             
             <!-- 
                 ********************************************************************************
-                *                   !!! 最终的、一击必杀的配置 !!!                   *
-                *       使用正确的、现代的、与 Java 21 兼容的 Doclet 库。          *
+                *                   !!! 最终的、一击必杀的配置 1 !!!                   *
+                *       清空 javadoc 插件内部所有依赖，让它变得纯净。          *
                 ********************************************************************************
             -->
             <plugin>
@@ -190,19 +190,11 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.6.3</version>
                 <configuration>
-                    <!-- 1. 使用现代库的正确类名 -->
                     <doclet>ch.raffael.doclet.markdown.MarkdownDoclet</doclet>
                     <destDir>apidocs-md</destDir>
                     <additionalOptions>-Xdoclint:none</additionalOptions>
                 </configuration>
-                <!-- 2. 使用插件依赖的方式，这是最可靠的，它将利用我们修复好的下载环境 -->
-                <dependencies>
-                    <dependency>
-                        <groupId>ch.raffael.doclet</groupId>
-                        <artifactId>doclet-markdown</artifactId>
-                        <version>1.5.1</version>
-                    </dependency>
-                </dependencies>
+                <!-- 此处必须为空，彻底放弃插件依赖解析 -->
             </plugin>
         </plugins>
 
@@ -244,6 +236,20 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- 
+            ************************************************************************************
+            *                              !!! 最终的、一击必杀的配置 2 !!!                    *
+            * 将 doclet 作为项目的主依赖，利用健康的解析机制下载它。                           *
+            * <scope>provided</scope> 确保它不会被打包进最终的 JAR，绝对安全。                *
+            ************************************************************************************
+        -->
+        <dependency>
+            <groupId>ch.raffael.doclet</groupId>
+            <artifactId>doclet-markdown</artifactId>
+            <version>1.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- 原有的项目依赖保持不变 -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
