@@ -6,33 +6,21 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.slimefun</groupId>
     <artifactId>Slimefun</artifactId>
-
-    <!-- Our default version will be UNOFFICIAL, this will prevent auto updates -->
-    <!-- from overriding our local test file -->
     <version>4.9-UNOFFICIAL</version>
     <inceptionYear>2013</inceptionYear>
     <packaging>jar</packaging>
 
-    <!-- Project Info -->
     <description>Slimefun is a Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items and recipes to your Minecraft Server.</description>
     <url>https://github.com/Slimefun/Slimefun4</url>
 
     <properties>
-        <!-- UTF-8 is our standard encoding for source files -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- Target Java 16 -->
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <!-- Run tests using java 21 -->
         <maven.compiler.testSource>21</maven.compiler.testSource>
         <maven.compiler.testTarget>21</maven.compiler.testTarget>
-
-        <!-- Spigot properties -->
         <paper.version>1.21.1</paper.version>
         <paper.javadocs>https://hub.spigotmc.org/javadocs/spigot/</paper.javadocs>
-
-        <!-- Default settings for sonarcloud.io -->
         <sonar.projectKey>Slimefun_Slimefun4</sonar.projectKey>
         <sonar.organization>slimefun</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -41,100 +29,88 @@
     </properties>
 
     <issueManagement>
-        <!-- Bug Tracker -->
         <system>GitHub Issues</system>
         <url>https://github.com/Slimefun/Slimefun4/issues</url>
     </issueManagement>
 
     <licenses>
         <license>
-            <!-- License -->
             <name>GNU General Public License v3.0</name>
             <url>https://github.com/Slimefun/Slimefun4/blob/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
-    <!-- Repositories that host our dependencies -->
-    <!-- Well, any that aren't found on maven-central. -->
     <repositories>
         <repository>
-            <!-- Spigot-API -->
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
         </repository>
         <repository>
-            <!-- PaperLib -->
             <id>paper-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <!-- ItemsAdder -->
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <!-- WorldEdit -->
             <id>worldedit-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
-            <!-- PlaceholderAPI -->
             <id>placeholderapi-repo</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi</url>
         </repository>
         <repository>
-            <!-- mcMMO -->
             <id>mcmmo-repo</id>
             <url>https://nexus.neetgames.com/repository/maven-public</url>
         </repository>
         <repository>
-            <!-- ClearLag -->
             <id>walshy-public</id>
             <url>https://repo.walshy.dev/public</url>
         </repository>
         <repository>
-            <!-- Orebfuscator -->
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
+    <!-- 
+        *****************************************************************
+        *                      !!! 关键修复 1 !!!                       *
+        *   将 pluginRepositories 放在正确的位置 (project的直接子级)     *
+        *****************************************************************
+    -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
-        <!-- /src/main/java/ contains all sources (production code) -->
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-
-        <!-- /src/test/java/ contains all unit tests (testing code) -->
         <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-
-        <!-- The default goal for compiling is "clean package" -->
         <defaultGoal>clean package</defaultGoal>
-
-        <!-- The name of the final jar -->
         <finalName>${project.name} v${project.version}</finalName>
 
         <plugins>
             <plugin>
-                <!-- Compiler plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
-
                 <configuration>
                     <excludes>
-                        <!-- package info files are only important for Javadocs -->
-                        <!-- We can safely exclude them from the final jar -->
                         <exclude>**/package-info.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
-
             <plugin>
-                <!-- Attach sources -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.3.1</version>
-
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -144,60 +120,45 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-                <!-- Plugin for Unit Tests -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
-
                 <configuration>
                     <junitArtifactName>org.junit.jupiter:junit-jupiter</junitArtifactName>
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
-
             <plugin>
-                <!-- Sonarcloud Scanner -->
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>5.0.0.4389</version>
             </plugin>
-
             <plugin>
-                <!-- Code Coverage Reports -->
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
-
                 <executions>
                     <execution>
                         <id>prepare</id>
-
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
-
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-                <!-- Dependency shading -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.0</version>
-
                 <configuration>
-                    <!-- Relocate these to avoid clashes and conflicts -->
                     <relocations>
                         <relocation>
                             <pattern>io.github.bakedlibs.dough</pattern>
@@ -212,8 +173,6 @@
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.commons.lang</shadedPattern>
                         </relocation>
                     </relocations>
-
-                    <!-- Exclude unneeded metadata files from shaded dependencies -->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
@@ -223,7 +182,6 @@
                         </filter>
                     </filters>
                 </configuration>
-
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -234,32 +192,21 @@
                 </executions>
             </plugin>
 
+            <!-- 
+                *****************************************************************
+                *                      !!! 关键修复 2 !!!                       *
+                *       清理并简化插件配置，只保留最可靠的<dependencies>        *
+                *****************************************************************
+            -->
             <plugin>
-                <!-- Javadocs -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
-
+                <version>3.6.3</version>
                 <configuration>
-                    <!-- 1. 指定 Doclet 类 -->
                     <doclet>ch.raffael.doclet.markdown.MarkdownDoclet</doclet>
-                    
-                    <!-- 2. 提供 Doclet 的依赖 -->
-                    <docletArtifact>
-                        <groupId>ch.raffael.doclet</groupId>
-                        <artifactId>doclet-markdown</artifactId>
-                        <version>1.5.1</version> <!-- 这是一个稳定版本 -->
-                    </docletArtifact>
-                    
-                    <!-- 3. 定义输出目录 (更清晰的名称) -->
-                    <!-- 注意：如果你用了GitHub Actions, 这里的路径要和Action里打包的路径一致 -->
                     <destDir>apidocs-md</destDir>
-                    
-                    <!-- 4. (重要!) 避免因文档注释不规范导致构建失败 -->
-                    <!-- 在自动化流程中非常有用 -->
                     <additionalOptions>-Xdoclint:none</additionalOptions>
                 </configuration>
-                
                 <dependencies>
                     <dependency>
                         <groupId>ch.raffael.doclet</groupId>
@@ -271,32 +218,23 @@
         </plugins>
 
         <resources>
-
-            <!-- Resources we want to include, e.g. configs or language files -->
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
-
                 <includes>
                     <include>plugin.yml</include>
                     <include>config.yml</include>
                     <include>item-models.yml</include>
-
                     <include>wiki.json</include>
                     <include>languages/translators.json</include>
-
                     <include>tags/*.json</include>
                     <include>biome-maps/*.json</include>
-
                     <include>languages/**/*.yml</include>
                 </includes>
             </resource>
-
-            <!-- We also want to include our LICENSE file -->
             <resource>
                 <directory>${basedir}</directory>
                 <filtering>false</filtering>
-
                 <includes>
                     <include>LICENSE</include>
                 </includes>
@@ -317,21 +255,11 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Development dependencies -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Shaded packages -->
-
-        <dependency>
-            <groupId>com.github.Slimefun.dough</groupId>
-            <artifactId>dough-api</artifactId>
-            <version>cb22e71335</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.github.Slimefun.dough</groupId>
@@ -345,16 +273,12 @@
             <version>1.0.8</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Paper -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
             <version>${paper.version}-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Testing dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -372,33 +296,25 @@
             <version>2.0.16</version>
             <scope>test</scope>
         </dependency>
-        <!-- This needs to be before Spigot because MockBukkit will fail otherwise. -->
         <dependency>
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.21</artifactId>
             <version>3.133.2</version>
             <scope>test</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We use javax.annotation instead. Excluding this -->
-                    <!-- prevents us from using inconsistent annotations -->
                     <groupId>org.jetbrains</groupId>
                     <artifactId>annotations</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <!-- Third party plugin integrations / soft dependencies -->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-core</artifactId>
             <version>7.3.9</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
@@ -409,10 +325,8 @@
             <artifactId>worldedit-bukkit</artifactId>
             <version>7.3.9</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
@@ -423,10 +337,8 @@
             <artifactId>mcMMO</artifactId>
             <version>2.2.029</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
@@ -437,10 +349,8 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
@@ -451,10 +361,8 @@
             <artifactId>clearlag-core</artifactId>
             <version>3.1.6</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
@@ -465,10 +373,8 @@
             <artifactId>itemsadder-api</artifactId>
             <version>3.6.1</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
@@ -479,16 +385,13 @@
             <artifactId>orebfuscator-api</artifactId>
             <version>5.4.0</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- TODO: Remove this dependency -->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -502,19 +405,10 @@
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <!-- We don't need any of the dependencies -->
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
