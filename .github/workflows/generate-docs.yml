@@ -1,48 +1,48 @@
-# 工作流名称
 name: Generate Markdown JavaDoc
 
-# 触发条件：当推送到 main 分支时，或手动触发时
 on:
   push:
     branches:
-      - main
-  workflow_dispatch: # 允许在 GitHub UI 上手动运行此工作流
+      - experimental
+  workflow_dispatch:
 
 jobs:
   build-and-package-docs:
-    # 运行环境：使用最新的 Ubuntu
     runs-on: ubuntu-latest
 
     steps:
-      # 第 1 步：检出你的代码
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 第 2 步：设置 Java 环境 (例如 JDK 17)
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: 'maven' # 缓存 Maven 依赖项，加快后续构建速度
+          cache: 'maven'
 
-      # 第 3 步：使用 Maven 生成 Markdown 文档
-      # 这个命令会执行你在 pom.xml 中配置的 javadoc 插件
+      # 镜像不安全的 Jenkins HTTP 仓库 !!!
+      - name: Create settings.xml for Maven
+        run: |
+          mkdir -p ~/.m2
+          echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+              <mirrors>
+                <mirror>
+                  <id>jenkins-repo-secure</id>
+                  <mirrorOf>repo.jenkins-ci.org</mirrorOf>
+                  <url>https://repo.jenkins-ci.org/public/</url>
+                </mirror>
+              </mirrors>
+            </settings>' > ~/.m2/settings.xml
+
       - name: Generate Markdown JavaDoc with Maven
-        run: mvn javadoc:javadoc
+        run: mvn -B --settings ~/.m2/settings.xml javadoc:javadoc
 
-      # 第 4 步：将生成的文档目录打包成 ZIP 文件
-      # 'zip -r <输出文件名> <要打包的目录>'
-      # 这里的 'target/apidocs-md' 路径是 Maven 的默认输出路径加上我们在 pom.xml 中定义的 destDir
       - name: Zip the documentation
         run: zip -r javadoc-markdown.zip target/apidocs-md
 
-      # 第 5 步：上传 ZIP 文件作为构建产物 (Artifact)
-      # 这样你就可以在工作流运行结束后下载它
       - name: Upload Javadoc Artifact
         uses: actions/upload-artifact@v4
         with:
-          # 构建产物的名称，会显示在下载页面
           name: javadoc-markdown-docs
-          # 要上传的文件的路径
           path: javadoc-markdown.zip

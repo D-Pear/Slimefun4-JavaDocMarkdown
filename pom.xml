@@ -76,8 +76,6 @@
         </repository>
     </repositories>
     
-    <!-- 移除 pluginRepositories，因为 doclet 在 Maven Central，默认就会查找 -->
-
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
@@ -85,7 +83,6 @@
         <finalName>${project.name} v${project.version}</finalName>
 
         <plugins>
-            <!-- 其他插件保持不变 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -180,36 +177,20 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- 
-                ********************************************************************************
-                *                           !!! 最终的正确配置 !!!                           *
-                *       完全按照官方文档的指示进行配置，使用正确的坐标和类名。         *
-                ********************************************************************************
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.3</version> <!-- 使用一个现代化的插件版本 -->
+                <version>3.6.3</version>
                 <configuration>
-                    <!-- 1. 使用官方文档指定的正确类名 -->
                     <doclet>ch.raffael.mddoclet.MarkdownDoclet</doclet>
-                    
-                    <!-- 2. 使用官方文档指定的正确坐标 -->
                     <docletArtifact>
                         <groupId>ch.raffael.markdown-doclet</groupId>
                         <artifactId>markdown-doclet</artifactId>
                         <version>1.4</version>
                     </docletArtifact>
-                    
-                    <!-- 3. 定义输出目录 -->
                     <destDir>apidocs-md</destDir>
-                    
-                    <!-- 4. 禁用严格检查，避免构建失败 -->
-                    <additionalOptions>-Xdoclint:none</additionalOptions>
-                    
-                    <!-- 5. 禁用标准选项，避免与Markdown Doclet冲突，这比 'true' 更安全 -->
                     <useStandardDocletOptions>false</useStandardDocletOptions>
+                    <additionalOptions>-Xdoclint:none</additionalOptions>
                 </configuration>
             </plugin>
         </plugins>
