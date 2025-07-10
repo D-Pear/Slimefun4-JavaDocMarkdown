@@ -83,6 +83,7 @@
         <finalName>${project.name} v${project.version}</finalName>
 
         <plugins>
+            <!-- 其他插件保持不变 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -177,21 +178,31 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- 
+                ********************************************************************************
+                *                   !!! 最终的、一击必杀的配置 !!!                   *
+                *       使用正确的、现代的、与 Java 21 兼容的 Doclet 库。          *
+                ********************************************************************************
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.6.3</version>
                 <configuration>
-                    <doclet>ch.raffael.mddoclet.MarkdownDoclet</doclet>
-                    <docletArtifact>
-                        <groupId>ch.raffael.markdown-doclet</groupId>
-                        <artifactId>markdown-doclet</artifactId>
-                        <version>1.4</version>
-                    </docletArtifact>
+                    <!-- 1. 使用现代库的正确类名 -->
+                    <doclet>ch.raffael.doclet.markdown.MarkdownDoclet</doclet>
                     <destDir>apidocs-md</destDir>
-                    <useStandardDocletOptions>false</useStandardDocletOptions>
                     <additionalOptions>-Xdoclint:none</additionalOptions>
                 </configuration>
+                <!-- 2. 使用插件依赖的方式，这是最可靠的，它将利用我们修复好的下载环境 -->
+                <dependencies>
+                    <dependency>
+                        <groupId>ch.raffael.doclet</groupId>
+                        <artifactId>doclet-markdown</artifactId>
+                        <version>1.5.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
 
